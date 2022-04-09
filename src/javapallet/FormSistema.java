@@ -165,11 +165,10 @@ public class FormSistema extends javax.swing.JFrame
             else //se for < decrementa do p.getQtd a quantidade da caixa
             {
                 p.setProduto(txtProduto.getText());
-                p.setQtd( Integer.parseInt(txtQtd.getText()));
+                p.setQtd(p.getQtd() - Integer.parseInt(txtQtd.getText()));
                 pilha.pop();
                 pilha.push(p);
             }
-            //e devolve - push(p)
             JOptionPane.showMessageDialog(null, "Encontrado com Sucesso!");
             mostra();
             break;
@@ -180,6 +179,12 @@ public class FormSistema extends javax.swing.JFrame
             paux.push(pilha.pop());
             mostra();
         }
+    }
+    //devolve tudo da pilha auxiliar
+    while(!paux.isEmpty())
+    {
+        pilha.push(paux.pop());
+        mostra();
     }
     }//GEN-LAST:event_btnRemoveActionPerformed
     

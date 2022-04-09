@@ -3,7 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package javapallet;
+import java.sql.Connection;
 import javax.swing.JOptionPane;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 /**
  *
  * @author minec
@@ -31,9 +36,10 @@ public class LoginSistema extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         txtSenha = new javax.swing.JPasswordField();
         txtUsuario = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        btnLogin = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        btnBurlar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -66,14 +72,14 @@ public class LoginSistema extends javax.swing.JFrame {
         });
         jPanel2.add(txtUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 230, 250, 50));
 
-        jButton1.setText("login");
-        jButton1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnLogin.setText("login");
+        btnLogin.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnLoginActionPerformed(evt);
             }
         });
-        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 420, 100, 50));
+        jPanel2.add(btnLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 420, 100, 50));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         jLabel2.setText("Seja bem vindo!");
@@ -82,6 +88,14 @@ public class LoginSistema extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel3.setText("Por favor, entre com suas credenciais abaixo.");
         jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 150, -1, -1));
+
+        btnBurlar.setText(":)");
+        btnBurlar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBurlarActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnBurlar, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 560, -1, -1));
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 0, 580, 600));
 
@@ -92,10 +106,10 @@ public class LoginSistema extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSenhaActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         //Observação: O certo a se fazer é guardar essas variáveis dentro de um banco de dados.
         //Se um login for feito dessa forma, é muito fácil ter os dados do programa roubados.
-        String credencial1 = txtUsuario.getText();
+        /*String credencial1 = txtUsuario.getText();
         String credencial2 = txtSenha.getText();
         if(credencial1.equals("admin") && credencial2.equals("admin"))
         {
@@ -110,11 +124,49 @@ public class LoginSistema extends javax.swing.JFrame {
             txtUsuario.setText("");
             txtSenha.setText("");
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+        */
+        
+        //Esta maneira é mais usual para programas mais sérios!
+        //Veja o exemplo abaixo:
+        try
+        {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/loginpallet", "root", "");
+            String sql = "Select * from admin where username=? and password=?";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, txtUsuario.getText());
+            pst.setString(2, txtSenha.getText());
+            ResultSet rs = pst.executeQuery();
+            if(rs.next())
+            {
+                JOptionPane.showMessageDialog(null, "Bem vindo!");
+                FormSistema f = new FormSistema();
+                f.setVisible(true);
+                this.setVisible(false);
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(null, "Usuario ou senha incorretos");
+                txtUsuario.setText("");
+                txtSenha.setText("");
+            }
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        
+    }//GEN-LAST:event_btnLoginActionPerformed
 
     private void txtUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsuarioActionPerformed
     
     }//GEN-LAST:event_txtUsuarioActionPerformed
+
+    private void btnBurlarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBurlarActionPerformed
+        FormSistema f = new FormSistema();
+        f.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnBurlarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -152,7 +204,8 @@ public class LoginSistema extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnBurlar;
+    private javax.swing.JButton btnLogin;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
