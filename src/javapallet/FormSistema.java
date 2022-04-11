@@ -1,7 +1,14 @@
 package javapallet;
 
+import com.sun.tools.javac.util.Convert;
 import java.util.*;
 import javax.swing.JOptionPane;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FormSistema extends javax.swing.JFrame 
 {
@@ -68,7 +75,7 @@ public class FormSistema extends javax.swing.JFrame
         lblTopo.setFont(new java.awt.Font("Segoe UI Black", 0, 24)); // NOI18N
         lblTopo.setForeground(new java.awt.Color(255, 255, 255));
         lblTopo.setText("Topo:");
-        jPanel2.add(lblTopo, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, 270, 40));
+        jPanel2.add(lblTopo, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, 440, 40));
 
         btnRemove.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Yellow"));
         btnRemove.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -119,7 +126,7 @@ public class FormSistema extends javax.swing.JFrame
             {
                 listPilha.append(p.toString()+"\n");
             }
-       
+       //--------------------------------------------
        //Mostrando a pilha Aux-----------------------
        listAux.setText("");
        for(Pallet p: paux)
@@ -141,13 +148,18 @@ public class FormSistema extends javax.swing.JFrame
     }//GEN-LAST:event_txtQtdActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+
         Pallet p = new Pallet();
         p.setProduto(txtProduto.getText());
         p.setQtd( Integer.parseInt(txtQtd.getText()) );
         pilha.push(p);
         System.out.println(pilha);
-        System.out.println("Topo :"+pilha.peek());
+        System.out.println("Topo: "+pilha.peek());
         mostra();
+        //Codigo para salvar arquivos----------------------------------------------------------------------------------------
+        ArquivoPallet arqp = new ArquivoPallet();
+        arqp.arquivoCheck(pilha);
+        //-------------------------------------------------------------------------------------------------------------------
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
@@ -169,13 +181,13 @@ public class FormSistema extends javax.swing.JFrame
                 pilha.pop();
                 pilha.push(p);
             }
-            JOptionPane.showMessageDialog(null, "Encontrado com Sucesso!");
+            JOptionPane.showMessageDialog(null, "O Produto foi encontrado!!");
             mostra();
             break;
         }
         else
         {
-            JOptionPane.showMessageDialog(null, "Movendo para auxiliar: " + p.getProduto());
+            JOptionPane.showMessageDialog(null, "Movendo para a lista auxiliar -> " + p.getProduto());
             paux.push(pilha.pop());
             mostra();
         }
@@ -186,6 +198,10 @@ public class FormSistema extends javax.swing.JFrame
         pilha.push(paux.pop());
         mostra();
     }
+    //Codigo para salvar arquivos----------------------------------------------------------------------------------------
+    ArquivoPallet arqp = new ArquivoPallet();
+    arqp.arquivoCheck(pilha);
+    //-------------------------------------------------------------------------------------------------------------------
     }//GEN-LAST:event_btnRemoveActionPerformed
     
     /**
